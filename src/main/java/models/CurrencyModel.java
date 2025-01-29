@@ -1,12 +1,12 @@
 package models;
 
-public class Currency {
+public class CurrencyModel {
     private int ID;
     private String code;
     private String fullName;
     private String sign;
 
-    public Currency(int ID, String code, String fullName, String sign) {
+    public CurrencyModel(int ID, String code, String fullName, String sign) {
         this.ID = ID;
         this.code = code;
         this.fullName = fullName;
