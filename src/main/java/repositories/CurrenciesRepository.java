@@ -27,11 +27,7 @@ public class CurrenciesRepository extends Repository<CurrencyModel> {
         try (Statement statement = conn.createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
-                int id = resultSet.getInt("ID");
-                String code = resultSet.getString("Code");
-                String fullName = resultSet.getString("FullName");
-                String sign = resultSet.getString("Sign");
-                CurrencyModel currencyModel = new CurrencyModel(id, code, fullName, sign);
+                CurrencyModel currencyModel = getCurrencyModel(resultSet);
                 currencies.add(currencyModel);
             }
         } catch (SQLException e) {
