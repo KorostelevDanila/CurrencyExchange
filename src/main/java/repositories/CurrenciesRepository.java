@@ -18,7 +18,7 @@ public class CurrenciesRepository extends Repository<CurrencyModel> {
     }
 
     @Override
-    public List<CurrencyModel> findAll() {
+    public List<CurrencyModel> findAll() throws SQLException {
         String query = "SELECT * FROM Currencies";
 
         List<CurrencyModel> currencies = new ArrayList<>();
@@ -31,7 +31,7 @@ public class CurrenciesRepository extends Repository<CurrencyModel> {
                 currencies.add(currencyModel);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
 
 
@@ -39,7 +39,7 @@ public class CurrenciesRepository extends Repository<CurrencyModel> {
     }
 
     @Override
-    public CurrencyModel findById(Long id) {
+    public CurrencyModel findById(Long id) throws SQLException {
         String query = "SELECT * FROM Currencies WHERE id = " + id;
         
         Connection conn = dbManager.getConnection();
@@ -51,9 +51,27 @@ public class CurrenciesRepository extends Repository<CurrencyModel> {
                 currency = getCurrencyModel(resultSet);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new SQLException(e);
         }
         
+        return currency;
+    }
+
+    public CurrencyModel findByCode(String code) throws SQLException {
+        String query = "SELECT * FROM Currencies WHERE code = " + code;
+
+        Connection conn = dbManager.getConnection();
+        CurrencyModel currency = null;
+
+        try (Statement statement = conn.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                currency = getCurrencyModel(resultSet);
+            }
+        } catch (SQLException e) {
+            throw new SQLException(e);
+        }
+
         return currency;
     }
 

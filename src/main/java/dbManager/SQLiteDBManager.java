@@ -18,12 +18,12 @@ public class SQLiteDBManager extends DBManager {
     }
 
     @Override
-    public Connection getConnection() {
+    public Connection getConnection() throws SQLException {
         try {
             Connection conn = dataSource.getConnection();
             return conn;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 }
