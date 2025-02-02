@@ -22,4 +22,20 @@ public class CurrencyModel {
                 ", sign='" + sign + '\'' +
                 '}';
     }
+
+    public int getID() {
+        return ID;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getSign() {
+        return sign;
+    }
 }
