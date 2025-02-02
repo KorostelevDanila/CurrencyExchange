@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.*;
+import java.sql.SQLException;
 import java.util.Currency;
 import java.util.List;
 
@@ -8,7 +9,10 @@ import dbManager.SQLiteDBManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import models.CurrencyModel;
+import org.sqlite.SQLiteErrorCode;
 import repositories.CurrenciesRepository;
 
 @WebServlet(name = "CurrenciesServlet", value = "/currencies")
@@ -21,18 +25,24 @@ public class CurrenciesServlet extends HttpServlet {
 
     // Endpoint: GET /currencies
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        List<CurrencyModel> currencies = currenciesRepository.findAll();
-
-        response.setContentType("text/html");
-
+        response.setContentType("application/json");
         PrintWriter pw = response.getWriter();
 
-        for (var a : currencies) {
-            pw.println(a.toString() + "\n");
+        try {
+            List<CurrencyModel> currencies = currenciesRepository.findAll();
+            pw.write((new JSONArray(currencies)).toString());
+        } catch (SQLException e) {
+            int errorCode = e.getErrorCode();
+            String errorMessage = e.getMessage();
+
+            String jsonErrorMessage = "Ошибка доступа к базе данных";
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("message", jsonErrorMessage);
+            pw.write(jsonObject.toString());
+
+            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
         }
-
-        //response.setContentType("application/json");
-
     }
 
     // Endpoint: POST /currencies
