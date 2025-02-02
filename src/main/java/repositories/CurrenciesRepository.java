@@ -44,6 +44,20 @@ public class CurrenciesRepository extends Repository<CurrencyModel> {
 
     @Override
     public CurrencyModel findById(Long id) {
-        return null;
+        String query = "SELECT * FROM Currencies WHERE id = " + id;
+        
+        Connection conn = dbManager.getConnection();
+        CurrencyModel currency = null;
+        
+        try (Statement statement = conn.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                currency = getCurrencyModel(resultSet);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        
+        return currency;
     }
 }
