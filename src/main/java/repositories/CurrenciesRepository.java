@@ -60,4 +60,13 @@ public class CurrenciesRepository extends Repository<CurrencyModel> {
         
         return currency;
     }
+
+    private static CurrencyModel getCurrencyModel(ResultSet resultSet) throws SQLException {
+        int id = resultSet.getInt("ID");
+        String code = resultSet.getString("Code");
+        String fullName = resultSet.getString("FullName");
+        String sign = resultSet.getString("Sign");
+        CurrencyModel currencyModel = new CurrencyModel(id, code, fullName, sign);
+        return currencyModel;
+    }
 }
