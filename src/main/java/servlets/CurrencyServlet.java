@@ -3,7 +3,7 @@ package servlets;import java.io.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
-@WebServlet(name = "CurrencyServlet", value = "/currency")
+@WebServlet(name = "CurrencyServlet", value = "/currency/*")
 public class CurrencyServlet extends HttpServlet {
 
     // Endpoint: GET /currency/value
