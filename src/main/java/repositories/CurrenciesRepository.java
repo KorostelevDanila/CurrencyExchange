@@ -40,7 +40,7 @@ public class CurrenciesRepository extends Repository<CurrencyModel> {
 
     @Override
     public CurrencyModel findById(Long id) throws SQLException {
-        String query = "SELECT * FROM Currencies WHERE id = " + id;
+        String query = "SELECT * FROM Currencies WHERE ID = " + id;
         
         Connection conn = dbManager.getConnection();
         CurrencyModel currency = null;
