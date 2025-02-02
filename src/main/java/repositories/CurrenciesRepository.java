@@ -58,7 +58,7 @@ public class CurrenciesRepository extends Repository<CurrencyModel> {
     }
 
     public CurrencyModel findByCode(String code) throws SQLException {
-        String query = "SELECT * FROM Currencies WHERE code = " + code;
+        String query = "SELECT * FROM Currencies WHERE Code = \'" + code + "\'";
 
         Connection conn = dbManager.getConnection();
         CurrencyModel currency = null;
