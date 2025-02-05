@@ -63,15 +63,10 @@ public class CurrenciesServlet extends HttpServlet {
             pw.write(jsonObject.toString());
         } catch (SQLException e) {
             String jsonErrorMessage = "Ошибка доступа к базе данных.";
-            JSONResponser.sendJSONErrorMessage(jsonErrorMessage, 500, response);
+            JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_SERVICE_UNAVAILABLE, response);
         } catch (NullPointerException e) {
             String jsonErrorMessage = "Не удалось сформировать JSON-представление объекта.";
-            //JSONResponser.sendJSONErrorMessage(jsonErrorMessage, 500, response);
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("message", jsonErrorMessage);
-            response.getWriter().write(jsonObject.toString());
-
-            response.setStatus(500);
+            JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
         }
 
     }
