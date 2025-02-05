@@ -13,6 +13,12 @@ public class CurrencyModel {
         this.sign = sign;
     }
 
+    public CurrencyModel(String code, String fullName, String sign) {
+        this.code = code;
+        this.fullName = fullName;
+        this.sign = sign;
+    }
+
     @Override
     public String toString() {
         return "Currency{" +
