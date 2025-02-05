@@ -1,14 +1,18 @@
 package repositories;
 
 import dbManager.DBManager;
+import models.CurrencyModel;
 import models.ExchangeRateModel;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public class ExchangeRateRepository extends Repository<ExchangeRateModel> {
-    public ExchangeRateRepository(DBManager dbManager) {
+    CurrenciesRepository currenciesRepository;
+
+    public ExchangeRateRepository(DBManager dbManager, CurrenciesRepository currenciesRepository) {
         this.dbManager = dbManager;
+        this.currenciesRepository = currenciesRepository;
     }
 
     @Override
