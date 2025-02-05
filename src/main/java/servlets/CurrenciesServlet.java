@@ -56,9 +56,24 @@ public class CurrenciesServlet extends HttpServlet {
 
         CurrencyModel newCurrencyForPosting = new CurrencyModel(code, fullName, sign);
 
-        CurrencyModel newCurrencyInRepository = currenciesRepository.insert(newCurrencyForPosting);
-        JSONObject jsonObject = new JSONObject(newCurrencyInRepository);
-        pw.write(jsonObject.toString());
+        CurrencyModel newCurrencyInRepository = null;
+        try {
+            newCurrencyInRepository = currenciesRepository.insert(newCurrencyForPosting);
+            JSONObject jsonObject = new JSONObject(newCurrencyInRepository);
+            pw.write(jsonObject.toString());
+        } catch (SQLException e) {
+            String jsonErrorMessage = "Ошибка доступа к базе данных.";
+            JSONResponser.sendJSONErrorMessage(jsonErrorMessage, 500, response);
+        } catch (NullPointerException e) {
+            String jsonErrorMessage = "Не удалось сформировать JSON-представление объекта.";
+            //JSONResponser.sendJSONErrorMessage(jsonErrorMessage, 500, response);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("message", jsonErrorMessage);
+            response.getWriter().write(jsonObject.toString());
+
+            response.setStatus(500);
+        }
+
     }
 
     public void destroy() {
