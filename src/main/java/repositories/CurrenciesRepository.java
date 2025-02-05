@@ -57,6 +57,25 @@ public class CurrenciesRepository extends Repository<CurrencyModel> {
         return currency;
     }
 
+    @Override
+    public CurrencyModel insert(CurrencyModel object) throws SQLException {
+        String query = "INSERT INTO Currencies(Code, FullName, Sign) VALUES ('" + object.getCode() + "',"
+                + "'" + object.getFullName() + "',"
+                + "'" + object.getSign() + "')";
+
+        Connection conn = dbManager.getConnection();
+        CurrencyModel currencyModel = null;
+
+        try (Statement statement = conn.createStatement()) {
+            statement.executeUpdate(query);
+            System.err.println(statement.getGeneratedKeys().getInt(1));
+        } catch (SQLException e) {
+            throw e;
+        }
+
+        return null;
+    }
+
     public CurrencyModel findByCode(String code) throws SQLException {
         String query = "SELECT * FROM Currencies WHERE Code = \'" + code + "\'";
 
