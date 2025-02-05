@@ -49,7 +49,19 @@ public class CurrenciesServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
-        super.doPost(request, response);
+        PrintWriter pw = response.getWriter();
+
+        String code, fullName, sign;
+
+        code = request.getParameter("code");
+        fullName = request.getParameter("fullName");
+        sign = request.getParameter("sign");
+
+        CurrencyModel newCurrencyForPosting = new CurrencyModel(code, fullName, sign);
+
+        CurrencyModel newCurrencyInRepository = currenciesRepository.insert(newCurrencyForPosting);
+        JSONObject jsonObject = new JSONObject(newCurrencyInRepository);
+        pw.write(jsonObject.toString());
     }
 
     public void destroy() {
