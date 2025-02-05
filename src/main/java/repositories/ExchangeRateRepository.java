@@ -22,7 +22,21 @@ public class ExchangeRateRepository extends Repository<ExchangeRateModel> {
 
     @Override
     public List<ExchangeRateModel> findAll() throws SQLException {
-        return List.of();
+        String mainQuery = "SELECT * FROM ExchangeRates";
+        Connection conn = dbManager.getConnection();
+        List<ExchangeRateModel> exchangeRates = new ArrayList<>();
+
+        try (Statement statement = conn.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(mainQuery);
+            while (resultSet.next()) {
+                ExchangeRateModel exchangeRate = getExchangeRateModel(resultSet);
+                exchangeRates.add(exchangeRate);
+            }
+        } catch (SQLException e) {
+            throw e;
+        }
+
+        return exchangeRates;
     }
 
     @Override
