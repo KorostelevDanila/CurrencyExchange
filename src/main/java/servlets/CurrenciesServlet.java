@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import models.CurrencyModel;
 import org.sqlite.SQLiteErrorCode;
 import repositories.CurrenciesRepository;
+import utlis.JSONResponser;
 
 @WebServlet(name = "CurrenciesServlet", value = "/currencies")
 public class CurrenciesServlet extends HttpServlet {
@@ -37,11 +38,7 @@ public class CurrenciesServlet extends HttpServlet {
 
             String jsonErrorMessage = "Ошибка доступа к базе данных";
 
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("message", jsonErrorMessage);
-            pw.write(jsonObject.toString());
-
-            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_SERVICE_UNAVAILABLE, response);
         }
     }
 
