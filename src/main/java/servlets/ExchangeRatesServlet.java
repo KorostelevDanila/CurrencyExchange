@@ -10,14 +10,17 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import models.ExchangeRateModel;
 import org.json.JSONArray;
+import repositories.CurrenciesRepository;
 import repositories.ExchangeRateRepository;
 
 @WebServlet(name = "ExchangeRatesServlet", value = "/exchangeRates")
 public class ExchangeRatesServlet extends HttpServlet {
     ExchangeRateRepository exchangeRateRepository;
+    CurrenciesRepository currenciesRepository;
 
     public ExchangeRatesServlet() throws ClassNotFoundException {
-        exchangeRateRepository = new ExchangeRateRepository(new SQLiteDBManager());
+        currenciesRepository = new CurrenciesRepository(new SQLiteDBManager());
+        exchangeRateRepository = new ExchangeRateRepository(new SQLiteDBManager(), currenciesRepository);
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
