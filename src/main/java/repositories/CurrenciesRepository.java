@@ -68,12 +68,13 @@ public class CurrenciesRepository extends Repository<CurrencyModel> {
 
         try (Statement statement = conn.createStatement()) {
             statement.executeUpdate(query);
-            System.err.println(statement.getGeneratedKeys().getInt(1));
+            long key = statement.getGeneratedKeys().getInt(1);
+            currencyModel = findById(key);
         } catch (SQLException e) {
             throw e;
         }
 
-        return null;
+        return currencyModel;
     }
 
     public CurrencyModel findByCode(String code) throws SQLException {
