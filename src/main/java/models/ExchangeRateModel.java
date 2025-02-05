@@ -1,22 +1,21 @@
 package models;
 
 import java.math.BigDecimal;
-import java.util.Currency;
 
 public class ExchangeRateModel {
     private int ID;
-    private Currency baseCurrency;
-    private Currency targetCurrency;
+    private CurrencyModel baseCurrency;
+    private CurrencyModel targetCurrency;
     private BigDecimal rate;
 
-    public ExchangeRateModel(int ID, Currency baseCurrency, Currency targetCurrency, BigDecimal rate) {
+    public ExchangeRateModel(int ID, CurrencyModel baseCurrency, CurrencyModel targetCurrency, BigDecimal rate) {
         this.ID = ID;
         this.baseCurrency = baseCurrency;
         this.targetCurrency = targetCurrency;
         this.rate = rate;
     }
 
-    public ExchangeRateModel(Currency baseCurrency, Currency targetCurrency, BigDecimal rate) {
+    public ExchangeRateModel(CurrencyModel baseCurrency, CurrencyModel targetCurrency, BigDecimal rate) {
         this.baseCurrency = baseCurrency;
         this.targetCurrency = targetCurrency;
         this.rate = rate;
@@ -26,11 +25,11 @@ public class ExchangeRateModel {
         return ID;
     }
 
-    public Currency getBaseCurrency() {
+    public CurrencyModel getBaseCurrency() {
         return baseCurrency;
     }
 
-    public Currency getTargetCurrency() {
+    public CurrencyModel getTargetCurrency() {
         return targetCurrency;
     }
 
