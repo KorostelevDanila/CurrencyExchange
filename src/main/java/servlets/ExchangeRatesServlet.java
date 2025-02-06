@@ -12,6 +12,7 @@ import models.ExchangeRateModel;
 import org.json.JSONArray;
 import repositories.CurrenciesRepository;
 import repositories.ExchangeRateRepository;
+import utlis.JSONResponser;
 
 @WebServlet(name = "ExchangeRatesServlet", value = "/exchangeRates")
 public class ExchangeRatesServlet extends HttpServlet {
@@ -32,7 +33,8 @@ public class ExchangeRatesServlet extends HttpServlet {
             JSONArray jsonArray = new JSONArray(exchangeRates);
             pw.write(jsonArray.toString());
         } catch (SQLException e) {
-            throw new RuntimeException(e); //TODO implement SQLException handling
+            String jsonErrorMessage = "Ошибка доступа к базе данных.";
+            JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_SERVICE_UNAVAILABLE, response);
         }
     }
 

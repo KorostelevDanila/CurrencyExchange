@@ -8,6 +8,7 @@ import models.CurrencyModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import repositories.CurrenciesRepository;
+import utlis.JSONResponser;
 import utlis.PathChecker;
 
 @WebServlet(name = "CurrencyServlet", value = "/currency/*")
@@ -34,12 +35,13 @@ public class CurrencyServlet extends HttpServlet {
                 pw.write(jsonObject.toString());
             } catch (SQLException e) {
                 throw new RuntimeException(e);
+            } catch (NullPointerException e) {
+                String message = "Не удалось найти валюту.";
+                JSONResponser.sendJSONErrorMessage(message, 404, response);
             }
         } else {
             String message = "Неправильный запрос валюты. Нужно предоставить корректный код валюты, например USD";
-            JSONObject jsonObject = new JSONObject().put("message", message);
-            pw.write(jsonObject.toString());
-            response.setStatus(404);
+            JSONResponser.sendJSONErrorMessage(message, 400, response);
         }
 
     }
