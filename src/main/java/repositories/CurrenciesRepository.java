@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
+import exceptions.NotFoundInDatabaseException;
 import models.CurrencyModel;
 
 public class CurrenciesRepository extends Repository<CurrencyModel> {
@@ -34,7 +34,6 @@ public class CurrenciesRepository extends Repository<CurrencyModel> {
             throw e;
         }
 
-
         return currencies;
     }
 
@@ -53,7 +52,11 @@ public class CurrenciesRepository extends Repository<CurrencyModel> {
         } catch (SQLException e) {
             throw new SQLException(e);
         }
-        
+
+        if (currency == null) {
+            throw new NotFoundInDatabaseException();
+        }
+
         return currency;
     }
 
@@ -90,6 +93,10 @@ public class CurrenciesRepository extends Repository<CurrencyModel> {
             }
         } catch (SQLException e) {
             throw new SQLException(e);
+        }
+
+        if (currency == null) {
+            throw new NotFoundInDatabaseException();
         }
 
         return currency;
