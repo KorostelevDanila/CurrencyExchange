@@ -43,7 +43,26 @@ public class ExchangeRateRepository extends Repository<ExchangeRateModel> {
 
     @Override
     public ExchangeRateModel findById(Long id) throws SQLException {
-        return null;
+        StringBuilder query = new StringBuilder("SELECT * FROM ExchangeRates WHERE ID = " + id);
+
+        Connection conn = dbManager.getConnection();
+
+        ExchangeRateModel exchangeRateModel = null;
+
+        try {
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery(query.toString());
+            while (resultSet.next()) {
+                exchangeRateModel = getExchangeRateModel(resultSet);
+            }
+        } catch (SQLException e) {
+            throw e;
+        }
+
+        if (exchangeRateModel == null) {
+            throw new NotFoundInDatabaseException("Валютная пара обмена не найдена");
+        }
+        return exchangeRateModel;
     }
 
     public ExchangeRateModel findByExchangePair(Map<String, String> exchangePair) throws SQLException {
