@@ -1,6 +1,7 @@
 package repositories;
 
 import dbManager.DBManager;
+import exceptions.NotFoundInDatabaseException;
 import models.CurrencyModel;
 import models.ExchangeRateModel;
 
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ExchangeRateRepository extends Repository<ExchangeRateModel> {
     CurrenciesRepository currenciesRepository;
@@ -44,6 +46,38 @@ public class ExchangeRateRepository extends Repository<ExchangeRateModel> {
         return null;
     }
 
+    public ExchangeRateModel findByExchangePair(Map<String, String> exchangePair) throws SQLException {
+        StringBuilder query = new StringBuilder("SELECT * FROM ExchangeRates WHERE");
+
+        Connection conn = dbManager.getConnection();
+
+        ExchangeRateModel exchangeRateModel = null;
+
+        try {
+            int baseCurrencyId = currenciesRepository.findByCode(exchangePair.get("from")).getID();
+            int targetCurrencyId = currenciesRepository.findByCode(exchangePair.get("to")).getID();
+
+            query.append(" BaseCurrencyId = ").append(baseCurrencyId);
+            query.append(" AND TargetCurrencyId = ").append(targetCurrencyId);
+
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery(query.toString());
+
+            while (resultSet.next()) {
+                exchangeRateModel = getExchangeRateModel(resultSet);
+            }
+        } catch (SQLException e) {
+            throw e;
+        } catch (NotFoundInDatabaseException e) {
+            throw new NotFoundInDatabaseException("Одной из валют в паре не существует в базе данных");
+        }
+
+        if (exchangeRateModel == null) {
+            throw new NotFoundInDatabaseException("Валютная пара обмена не найдена");
+        }
+        return exchangeRateModel;
+    }
+
     @Override
     public ExchangeRateModel insert(ExchangeRateModel object) throws SQLException {
         return null;
@@ -58,4 +92,6 @@ public class ExchangeRateRepository extends Repository<ExchangeRateModel> {
         CurrencyModel targetCurrency = currenciesRepository.findById(targetCurrencyId);
         return new ExchangeRateModel(ID, baseCurrency, targetCurrency, rate);
     }
+
+
 }
