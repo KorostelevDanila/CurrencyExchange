@@ -2,6 +2,7 @@ package servlets;import java.io.*;
 import java.sql.SQLException;
 
 import dbManager.SQLiteDBManager;
+import exceptions.NotFoundInDatabaseException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import models.CurrencyModel;
@@ -35,7 +36,7 @@ public class CurrencyServlet extends HttpServlet {
                 pw.write(jsonObject.toString());
             } catch (SQLException e) {
                 throw new RuntimeException(e);
-            } catch (NullPointerException e) {
+            } catch (NotFoundInDatabaseException e) {
                 String message = "Не удалось найти валюту.";
                 JSONResponser.sendJSONErrorMessage(message, 404, response);
             }
