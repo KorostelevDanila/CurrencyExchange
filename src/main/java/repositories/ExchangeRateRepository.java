@@ -5,12 +5,14 @@ import exceptions.NotFoundInDatabaseException;
 import models.CurrencyModel;
 import models.ExchangeRateModel;
 
+import javax.swing.plaf.nimbus.State;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -99,7 +101,44 @@ public class ExchangeRateRepository extends Repository<ExchangeRateModel> {
 
     @Override
     public ExchangeRateModel insert(ExchangeRateModel object) throws SQLException {
-        return null;
+        String query = "INSERT INTO ExchangeRates(BaseCurrencyId, TargetCurrencyId, Rate) VALUES(" + object.getBaseCurrency().getID()
+                + ", " + object.getTargetCurrency().getID()
+                + ", " + object.getRate() + ")";
+
+        Connection conn = dbManager.getConnection();
+        ExchangeRateModel exchangeRate = null;
+
+        try (Statement statement = conn.createStatement()) {
+            statement.executeUpdate(query);
+            long key = statement.getGeneratedKeys().getInt(1);
+            exchangeRate = findById(key);
+        } catch (SQLException e) {
+            throw e;
+        }
+
+        return exchangeRate;
+    }
+
+    @Override
+    public ExchangeRateModel update(ExchangeRateModel object) throws SQLException {
+        String query = "UPDATE ExchangeRates SET Rate = " + object.getRate()
+        + " WHERE BaseCurrencyId = " + object.getBaseCurrency().getID()
+        + " AND TargetCurrencyId = " + object.getTargetCurrency().getID();
+
+        Connection conn = dbManager.getConnection();
+        ExchangeRateModel exchangeRate = null;
+
+        try (Statement statement = conn.createStatement()) {
+            statement.executeUpdate(query);
+            Map<String, String> exchangePair = new HashMap<>();
+            exchangePair.put("from", object.getBaseCurrency().getCode());
+            exchangePair.put("to", object.getTargetCurrency().getCode());
+            exchangeRate = findByExchangePair(exchangePair);
+        } catch (SQLException e) {
+            throw e;
+        }
+
+        return exchangeRate;
     }
 
     private ExchangeRateModel getExchangeRateModel(ResultSet resultSet) throws SQLException {

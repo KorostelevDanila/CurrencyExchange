@@ -80,6 +80,11 @@ public class CurrenciesRepository extends Repository<CurrencyModel> {
         return currencyModel;
     }
 
+    @Override
+    public CurrencyModel update(CurrencyModel object) throws SQLException {
+        return null;
+    }
+
     public CurrencyModel findByCode(String code) throws SQLException {
         String query = "SELECT * FROM Currencies WHERE Code = \'" + code + "\'";
 
