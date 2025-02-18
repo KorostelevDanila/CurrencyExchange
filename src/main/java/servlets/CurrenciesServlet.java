@@ -54,6 +54,14 @@ public class CurrenciesServlet extends HttpServlet {
         fullName = request.getParameter("fullName");
         sign = request.getParameter("sign");
 
+        if (code == null || code.isBlank() ||
+                fullName == null || fullName.isBlank() ||
+                sign == null || sign.isBlank()) {
+            String jsonErrorMessage = "Все поля должны быть заполнены.";
+            JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_BAD_REQUEST, response);
+            return;
+        }
+
         CurrencyModel newCurrencyForPosting = new CurrencyModel(code, fullName, sign);
 
         CurrencyModel newCurrencyInRepository = null;
