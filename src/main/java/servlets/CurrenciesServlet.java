@@ -37,7 +37,6 @@ public class CurrenciesServlet extends HttpServlet {
             String errorMessage = e.getMessage();
 
             String jsonErrorMessage = "Ошибка доступа к базе данных";
-
             JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_SERVICE_UNAVAILABLE, response);
         }
     }
@@ -71,7 +70,12 @@ public class CurrenciesServlet extends HttpServlet {
             pw.write(jsonObject.toString());
         } catch (SQLException e) {
             String jsonErrorMessage = "Ошибка доступа к базе данных.";
-            JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_SERVICE_UNAVAILABLE, response);
+            if (e.getMessage().contains("UNIQUE constraint failed")) {
+                jsonErrorMessage = "Запись уже существует в базе данных";
+                JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_CONFLICT, response);
+            } else {
+                JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_SERVICE_UNAVAILABLE, response);
+            }
         } catch (NullPointerException e) {
             String jsonErrorMessage = "Не удалось сформировать JSON-представление объекта.";
             JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response);
