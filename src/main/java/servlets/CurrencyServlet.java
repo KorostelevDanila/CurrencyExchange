@@ -35,7 +35,8 @@ public class CurrencyServlet extends HttpServlet {
                 JSONObject jsonObject = new JSONObject(currency);
                 pw.write(jsonObject.toString());
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                String jsonErrorMessage = "Ошибка доступа к базе данных";
+                JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_SERVICE_UNAVAILABLE, response);
             } catch (NotFoundInDatabaseException e) {
                 String message = "Не удалось найти валюту.";
                 JSONResponser.sendJSONErrorMessage(message, 404, response);

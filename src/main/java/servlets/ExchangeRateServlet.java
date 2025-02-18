@@ -56,7 +56,8 @@ public class ExchangeRateServlet extends HttpServlet {
                 JSONObject jsonObject = new JSONObject(exchangeRateModel);
                 pw.write(jsonObject.toString());
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                String jsonErrorMessage = "Ошибка доступа к базе данных";
+                JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_SERVICE_UNAVAILABLE, response);
             } catch (NotFoundInDatabaseException e) {
                 String message = e.getMessage();
                 JSONResponser.sendJSONErrorMessage(message, 404, response);
@@ -100,7 +101,8 @@ public class ExchangeRateServlet extends HttpServlet {
                 JSONObject jsonObject = new JSONObject(updatedExchangeRateModel);
                 pw.write(jsonObject.toString());
             } catch (SQLException e) {
-                throw  new RuntimeException(e);
+                String jsonErrorMessage = "Ошибка доступа к базе данных";
+                JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_SERVICE_UNAVAILABLE, response);
             }
         }
     }

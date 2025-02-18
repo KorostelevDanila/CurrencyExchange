@@ -44,7 +44,8 @@ public class ExchangeServlet extends HttpServlet {
             String message = e.getMessage();
             JSONResponser.sendJSONErrorMessage(message, 400, response);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            String jsonErrorMessage = "Ошибка доступа к базе данных";
+            JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_SERVICE_UNAVAILABLE, response);
         }
 
     }
