@@ -32,6 +32,13 @@ public class ExchangeServlet extends HttpServlet {
 
         Map<String, String> params = GetParameters.parseFormBody(request);
 
+        if (params.get("from") == null ||
+            params.get("to") == null ||
+            params.get("amount") == null) {
+            String message = "Неправильный запрос. Нужно предоставить нужные поля.";
+            JSONResponser.sendJSONErrorMessage(message, HttpServletResponse.SC_BAD_REQUEST, response);
+        }
+
         baseCurrencyCode = params.get("from");
         targetCurrencyCode = params.get("to");
         amount = new BigDecimal(params.get("amount"));
