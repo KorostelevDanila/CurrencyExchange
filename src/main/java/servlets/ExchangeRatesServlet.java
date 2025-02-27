@@ -3,6 +3,7 @@ package servlets;
 import java.io.*;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,20 +55,39 @@ public class ExchangeRatesServlet extends HttpServlet {
         try {
             baseCurrencyCode = request.getParameter("baseCurrencyCode");
             targetCurrencyCode = request.getParameter("targetCurrencyCode");
+
+            if (baseCurrencyCode == null || baseCurrencyCode.isBlank() ||
+                    targetCurrencyCode == null || targetCurrencyCode.isBlank() ||
+                    request.getParameter("rate") == null) {
+                String jsonErrorMessage = "Все поля должны быть заполнены.";
+                JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_BAD_REQUEST, response);
+                return;
+            }
+
             rate = new BigDecimal(request.getParameter("rate"));
 
             CurrencyModel baseCurrency = currenciesRepository.findByCode(baseCurrencyCode);
             CurrencyModel targetCurrency = currenciesRepository.findByCode(targetCurrencyCode);
 
-            ExchangeRateModel exchangeRate = exchangeRateRepository.insert(new ExchangeRateModel(baseCurrency, targetCurrency, rate));
+            try {
+                Map<String, String> exchangePair = new HashMap<String, String>();
+                exchangePair.put("from", baseCurrencyCode);
+                exchangePair.put("to", targetCurrencyCode);
+                ExchangeRateModel exchangeRate = exchangeRateRepository.findByExchangePair(exchangePair);
+                String jsonErrorMessage = "Пара обмена уже существует в базе данных.";
+                JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_CONFLICT, response);
+            } catch (NotFoundInDatabaseException e) {
+                ExchangeRateModel exchangeRate = exchangeRateRepository.insert(new ExchangeRateModel(baseCurrency, targetCurrency, rate));
 
-            JSONObject jsonObject = new JSONObject(exchangeRate);
-            pw.write(jsonObject.toString());
+                JSONObject jsonObject = new JSONObject(exchangeRate);
+                pw.write(jsonObject.toString());
+            }
         } catch (SQLException e) {
             String jsonErrorMessage = "Ошибка доступа к базе данных";
             JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_SERVICE_UNAVAILABLE, response);
         } catch (NotFoundInDatabaseException e) {
-            throw new RuntimeException(e);
+            String jsonErrorMessage = e.getMessage();
+            JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_NOT_FOUND, response);
         }
     }
 
