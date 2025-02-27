@@ -101,7 +101,7 @@ public class CurrenciesRepository extends Repository<CurrencyModel> {
         }
 
         if (currency == null) {
-            throw new NotFoundInDatabaseException();
+            throw new NotFoundInDatabaseException("Требуемая валюта не найдена");
         }
 
         return currency;
