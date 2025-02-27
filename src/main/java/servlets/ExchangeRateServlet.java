@@ -80,13 +80,18 @@ public class ExchangeRateServlet extends HttpServlet {
 
         Map<String, String> params = GetParameters.parseFormBody(request);
 
+        if (params.get("rate") == null) {
+            String message = "Неправильный запрос на обновление обменного курса. Нужно предоставить курс обмена.";
+            JSONResponser.sendJSONErrorMessage(message, HttpServletResponse.SC_BAD_REQUEST, response);
+        }
+
         BigDecimal rate = new BigDecimal(params.get("rate"));
         Map<String, String> exchangePair = PathChecker.checkExchangeRatePath(path);
         ExchangeRateModel updatedExchangeRateModel;
 
         if (exchangePair == null) {
             String message = "Неправильный запрос на обновление обеменного курса. Нужно предоставить пару кодов валют, например /USDRUB";
-            JSONResponser.sendJSONErrorMessage(message, 400, response);
+            JSONResponser.sendJSONErrorMessage(message, HttpServletResponse.SC_BAD_REQUEST, response);
         } else {
             try {
                 ExchangeRateModel exchangeRateModel = exchangeRateRepository.findByExchangePair(exchangePair);
@@ -96,13 +101,14 @@ public class ExchangeRateServlet extends HttpServlet {
                                 exchangeRateModel.getTargetCurrency(),
                                 rate)
                 );
-
-
                 JSONObject jsonObject = new JSONObject(updatedExchangeRateModel);
                 pw.write(jsonObject.toString());
             } catch (SQLException e) {
                 String jsonErrorMessage = "Ошибка доступа к базе данных";
                 JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_SERVICE_UNAVAILABLE, response);
+            } catch (NotFoundInDatabaseException e) {
+                String jsonErrorMessage = "Валютная пара не найдена";
+                JSONResponser.sendJSONErrorMessage(jsonErrorMessage, HttpServletResponse.SC_NOT_FOUND, response);
             }
         }
     }
