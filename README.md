@@ -7,3 +7,4 @@ Technologies:
 - Jakarta Servlets
 - JDBC
 - Maven
+- SQLite
