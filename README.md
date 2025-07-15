@@ -8,3 +8,8 @@ Technologies:
 - JDBC
 - Maven
 - SQLite
+
+Endpoints:
+- /currencies
+  - GET: get a list of all currencies
+  - POST: add new currency to repository
